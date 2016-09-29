@@ -215,9 +215,14 @@ export default class NeovimInput {
         this.ime_running = true;
     }
 
-    endComposition(_: Event) {
+    endComposition(event: Event) {
         log.debug('end composition');
         this.ime_running = false;
+
+        // `compositionend` is sent after `input`, so we need to grab input data here.
+        // see: https://w3c.github.io/uievents/#events-composition-input-events
+
+        this.store.dispatcher.dispatch(inputToNeovim((event as CompositionEvent).data));
     }
 
     focus() {
